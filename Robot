@@ -1,0 +1,254 @@
+namespace Robot_Security_System
+{
+    public class Robot
+    {
+
+        //Movement
+        Die d8 = new Die();
+        Die d10 = new Die();
+        int direction;
+        int movementAmount = 0;
+
+        //Collision
+        bool collisionDetected = false;
+
+        //Robot
+        protected string RobotID { get; set; }
+        protected char RobotSprite { get; set; }
+
+        protected int StartPositionY { get; set; }
+        protected int StartPositionX { get; set; }
+
+        protected int positionX { get; set; }
+        protected int positionY { get; set; }
+
+        //Emergency Exit
+        public List<int> emergencyX = new List<int>();
+        public List<int> emergencyY = new List<int>();
+        public List<double> distanceTo = new List<double>();
+
+        public double currentTemp = 1000;
+        public double currentX = 0;
+        public double currentY = 0;
+        public double temp1 = 0;
+
+        public Robot()
+        {
+          
+        }
+
+        public void Draw()
+        {
+            Console.SetCursorPosition(positionX, positionY);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(RobotSprite);
+        }
+
+        public void RobotID_Details()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(RobotID);
+        }
+
+        public void RobotPosition_Details()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("X: {0}   Y: {1}", positionX, positionY);
+        }
+
+        public void RobotAutoState()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(RobotID + ": Automatic");
+        }
+
+        public void RobotManuState()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(RobotID + ": Manual");
+        }
+
+        public void AutoMovement(Floors floor, Robot otherRobot)
+        { 
+            if (movementAmount == 0)
+            {
+                direction = d8.D8Roll();
+                movementAmount = d10.D10Roll();
+                collisionDetected = false;             
+            }
+
+            //Right
+            if (direction == 1 || direction == 8)
+            {
+                    if (floor.map[positionX + 1, positionY] != ' ')
+                    {
+                        collisionDetected = true;
+                        movementAmount = 0;
+                    }
+                    else if (!collisionDetected && positionX + 1 != otherRobot.positionX && positionY != otherRobot.positionY)
+                    {
+                        positionX++;
+                        movementAmount--;
+                    }
+            }
+            //Left
+            if (direction == 2 || direction == 6)
+            {
+                if (floor.map[positionX - 1, positionY] != ' ')
+                {
+                    collisionDetected = true;
+                    movementAmount = 0;
+                }
+                else if (!collisionDetected && positionX - 1 != otherRobot.positionX && positionY != otherRobot.positionY)
+                {
+                    positionX--;
+                    movementAmount--;
+                }
+            }
+            //Down
+            if (direction == 4 || direction == 5)
+            {
+                if (floor.map[positionX, positionY + 1] != ' ')
+                {
+                    collisionDetected = true;
+                    movementAmount = 0;
+                }
+                else if(!collisionDetected && positionY + 1 != otherRobot.positionY && positionX != otherRobot.positionX  )
+                {
+                    positionY++;
+                    movementAmount--;
+                }
+            }
+            //Up
+            if (direction == 3 || direction == 7)
+            {
+                if (floor.map[positionX, positionY - 1] != ' ')
+                {
+                    collisionDetected = true;
+                    movementAmount = 0;
+                }
+                else if (!collisionDetected && positionY - 1 != otherRobot.positionX && positionX != otherRobot.positionY)
+                {
+                    positionY--;
+                    movementAmount--;
+                }
+            }
+        }
+
+        public void ManualMovement(Floors floor, Robot otherRobot, ConsoleKey keyPress )
+        {
+            
+                if (keyPress == ConsoleKey.RightArrow)
+                {
+                    if (floor.map[positionX + 1, positionY] != ' ')
+                    {
+
+                    }
+                    else if (positionX + 1 != otherRobot.positionX && positionY != otherRobot.positionY)
+                    {
+                        positionX++;
+                    }
+                }
+                if (keyPress == ConsoleKey.LeftArrow)
+                {
+                    if (floor.map[positionX - 1, positionY] != ' ')
+                    {
+
+                    }
+                    else if (positionX - 1 != otherRobot.positionX && positionY != otherRobot.positionY)
+                    {
+                        positionX--;
+                    }
+                }
+                if (keyPress == ConsoleKey.UpArrow)
+                {
+                    if (floor.map[positionX, positionY - 1] != ' ')
+                    {
+
+                    }
+                    else if (positionX != otherRobot.positionX && positionY - 1 != otherRobot.positionY)
+                    {
+                        positionY--;
+                    }
+                }
+                if (keyPress == ConsoleKey.DownArrow)
+                {
+                    if (floor.map[positionX, positionY + 1] != ' ')
+                    {
+
+                    }
+                    else if (positionX != otherRobot.positionX && positionY + 1 != otherRobot.positionY)
+                    {
+                        positionY++;
+                    }
+                }
+        }
+
+        public void FindDoors(Floors floor)
+        {
+            //Goes through the map and reads/locates all characters == '1', stores co-ordinates in X & Y list.
+            for (int y = 0; y < floor.map.GetLength(1); y++)
+            {
+                for (int x = 0; x < floor.map.GetLength(0); x++)
+                {
+                    if (floor.map[x, y] == '1')
+                    {
+                        emergencyX.Add(x);
+                        emergencyY.Add(y);
+                    }
+                }
+            }
+                  //Goes through list and calculates the distance between them and the selected robot and places smallest in set variables
+            for (int i = 0; i < emergencyY.Count; i++)
+            {
+                double distance = Math.Sqrt(Math.Pow(positionX - emergencyX[i], 2) + Math.Pow(positionY - emergencyY[i], 2));
+                distanceTo.Add(distance);
+            }
+        }
+
+        public void EmergencyExit(Floors floor)
+        {
+            //Calulates the smallest of the list
+            for (int i = 0; i < distanceTo.Count; i++)
+            {
+                temp1 = distanceTo[i];
+                
+                if (temp1 < currentTemp)
+                {
+                    currentTemp = temp1;
+                    currentX = emergencyX[i];
+                    currentY = emergencyY[i];
+                }               
+            }
+
+            //Movement to the door with the smallest distance
+
+            // Y is greater than
+            if (positionY > currentY)
+            {
+                positionY--;
+            }
+
+            // Y is less than
+            if (positionY < currentY)
+            {
+                positionY++;                
+            }
+
+            // Y is ==
+            if (positionY == currentY)
+            {
+                // X is greater than
+                if (positionX > currentX)
+                {
+                    positionX--;
+                }
+                // X is less than 
+                else if (positionX < currentX)
+                {
+                    positionX++;
+                }
+            }
+        }
+    }
+}
