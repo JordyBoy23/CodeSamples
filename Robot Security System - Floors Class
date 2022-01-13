@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Robot_Security_System
+{
+    public class Floors
+    { 
+        public string mapFloor; 
+        public int mapX = 0;
+        public int mapY = 0;
+        public char[,] map;
+        
+
+        //Allows me to implement variables as values for array
+        public void CreateMap(string mapFloor)
+        {
+            mapFloor = System.IO.File.ReadAllText(mapFloor);
+
+            
+            foreach (char cell in mapFloor)
+            {
+                if (cell == '\r')
+                    {}
+                else if (cell == '\n')
+                {
+                    mapY++;
+                    mapX = 0;
+                }
+                else
+                {
+                    mapX++;
+                }
+            }
+            map = new char [mapX, mapY];
+        
+            mapX = 0;
+            mapY = 0;
+            
+
+            //Places characters in cell
+            foreach (char cell in mapFloor)
+            {
+                if (cell == '\r')
+                {
+                    //Do nothing
+                }
+                else if (cell == '\n')
+                {
+                    mapY++;
+                    mapX = 0;
+                }
+                else
+                {
+                    map[mapX +1, mapY +1] = cell;
+                    mapX++;
+                }
+            }
+
+            mapX = map.GetLength(1);
+            mapY = map.GetLength(0);
+        }
+
+        public void DisplayingDetailsFloor()
+        {
+            for (int row = 0; row < map.GetLength(1); row++)
+            {
+                for (int column = 0; column < map.GetLength(0); column++)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(map[column, row]);
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}
