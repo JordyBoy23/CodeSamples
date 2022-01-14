@@ -1,0 +1,17 @@
+namespace Assignment_011
+{
+    interface IInitialise
+    {
+        void Initialise();
+    }
+
+    interface IDrawable
+    {
+        void Display(); 
+    }
+
+    interface IUpdatable
+    {
+        void Update();
+    }
+}
