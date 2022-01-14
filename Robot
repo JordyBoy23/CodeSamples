@@ -212,7 +212,7 @@ namespace Robot_Security_System
             for (int i = 0; i < distanceTo.Count; i++)
             {
                 temp1 = distanceTo[i];
-                
+                // currentTemp is set to 1000
                 if (temp1 < currentTemp)
                 {
                     currentTemp = temp1;
