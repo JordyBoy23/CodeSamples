@@ -1,0 +1,16 @@
+class Item : IDrawable
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+
+
+        public virtual void Display()
+        {
+            Console.Write("Name: {0,18} | Price: £{1, 5}", Name, Price);
+        }
+
+        public void DisplaySpecificItem()
+        {
+            Console.Write("{0}", Name);
+        }
+    }
