@@ -1,0 +1,64 @@
+public class UnitTest1
+    {
+        [TestMethod]
+        public void TestFindingDoors()
+        {
+            Robots testRobot = new Robots("01", 'W', 7, 4);
+
+            Floors[] floor = new Floors[1];
+
+            //Floor1
+            floor[0] = new Floors();
+            floor[0].CreateMap("floor_maps/first_floor.txt");
+
+            testRobot.FindDoors(floor[0]);
+            testRobot.EmergencyExit(floor[0]);
+
+            Assert.AreEqual(11, testRobot.currentY, 0.001, "Not Equal");
+            Assert.AreEqual(0, testRobot.currentX, 0.001, "Not Equal");
+        }
+
+        [TestMethod]
+        public void TestRobotManualMovement()
+        {
+            Robots testRobot = new Robots("02", 'H', 5, 5);
+            Floors[] floor = new Floors[1];
+            floor[0] = new Floors(); 
+            floor[0].CreateMap("floor_maps/first_floor.txt");
+
+            ConsoleKey keyPress = ConsoleKey.UpArrow;
+
+            testRobot.ManualMovement(floor[0], new Robots("03", 'O', 2, 2), keyPress);
+
+            Assert.AreEqual(4, testRobot.positionY, 0.001, "Not Equal");
+            Assert.AreEqual(5, testRobot.positionX, 0.001, "Not Equal");
+        }
+
+        [TestMethod]
+        public void TestRandomNumberGenerator()
+        {
+            Robots testRobot = new Robots("04", 'T', 6, 6);
+            Floors[] floor = new Floors[1];
+            Die rng = new Die();
+            int direction = rng.D8Roll();
+
+            Assert.IsTrue(direction >= 1, "The direction was not greater or equal to 1");
+            Assert.IsTrue(direction <= 8, "The direction was not less than or equal to 8");
+        }
+
+        [TestMethod]
+        public void TestCollision()
+        {
+            Robots testRobot = new Robots("05", 'A', 1, 1);
+            Floors[] floor = new Floors[1];
+            floor[0] = new Floors();
+            floor[0].CreateMap("floor_maps/first_floor.txt");
+
+            ConsoleKey keyPress = ConsoleKey.UpArrow;
+
+            testRobot.ManualMovement(floor[0], new Robots("06", 'W', 1, 1), keyPress);
+
+            Assert.AreEqual(1, testRobot.positionY, 0.001, "Not Equal");
+            Assert.AreEqual(1, testRobot.positionX, 0.001, "Not Equal");
+        }
+    }
