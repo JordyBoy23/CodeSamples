@@ -35,18 +35,6 @@ public class UnitTest1
         }
 
         [TestMethod]
-        public void TestRandomNumberGenerator()
-        {
-            Robots testRobot = new Robots("04", 'T', 6, 6);
-            Floors[] floor = new Floors[1];
-            Die rng = new Die();
-            int direction = rng.D8Roll();
-
-            Assert.IsTrue(direction >= 1, "The direction was not greater or equal to 1");
-            Assert.IsTrue(direction <= 8, "The direction was not less than or equal to 8");
-        }
-
-        [TestMethod]
         public void TestCollision()
         {
             Robots testRobot = new Robots("05", 'A', 1, 1);
