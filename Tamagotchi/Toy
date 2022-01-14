@@ -1,0 +1,17 @@
+class Toy : Item, IDrawable
+    {
+        public int happinessIncreaseValue;
+
+        public Toy(string toyName, decimal toyPrice, int happinessRestore)
+        {
+            Name = toyName;
+            Price = toyPrice;
+            this.happinessIncreaseValue = happinessRestore;
+        }
+
+
+        public override void Display()
+        {
+            Console.Write("{0, 25} | Price: £{1, 7} | Happiness: +{2, 4}", Name, Price, happinessIncreaseValue);
+        }
+    }
