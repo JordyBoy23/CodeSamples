@@ -1,0 +1,40 @@
+public class Die
+    {
+        int d10Sides = 10;
+        int d8Sides = 8;
+        int result;
+
+        static Random rng = new Random();
+
+        public Die()
+        {
+
+        }
+
+        public static class StaticRandom
+        {
+            private static int seed;
+
+            private static ThreadLocal<Random> threadLocal = new ThreadLocal<Random>
+                (() => new Random(Interlocked.Increment(ref seed)));
+
+            static StaticRandom()
+            {
+                seed = Environment.TickCount;
+            }
+
+            public static Random Instance { get { return threadLocal.Value; } }
+        }
+
+        public int D10Roll()
+        {
+            result = rng.Next(1, d10Sides);
+            return result;
+        }
+
+        public int D8Roll()
+        {
+            result = rng.Next(1, d8Sides);
+            return result;
+        }
+    }
