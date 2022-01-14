@@ -1,0 +1,213 @@
+class App : IDrawable, IUpdatable, IInitialise
+    {
+        SelectionMenu selectionMenu = new SelectionMenu();
+        Room room = new Room();
+        CoinGenerator coin = new CoinGenerator();
+        Shop shop = new Shop();
+        Pet pet = new Pet();
+
+        public App() { }
+
+        //Variables
+        bool doneSelection = false;
+
+        #region List of iUpdatables
+        List<IUpdatable> iUpdatable = new List<IUpdatable>();
+        public void AddingIUpdatable()
+        {
+            iUpdatable.Add(coin);
+
+
+
+            //iUpdatable.Add(room);
+        }
+        #endregion
+
+        #region List of iDrawables
+        List<IDrawable> iDrawable = new List<IDrawable>();
+        public void AddingIDrawable()
+        {
+            iDrawable.Add(coin);
+
+
+            //iDrawable.Add(room());
+            //iDrawable.Add(selectionMenu);
+        }
+        #endregion
+
+        #region Loop of the program
+        bool appRunning = true;
+
+        public void Run()
+        {
+            Initialise();
+
+            do
+            {
+                Update();
+                Display();
+                Thread.Sleep(600 / 10);
+            } while (appRunning);
+
+        }
+        #endregion
+
+        public void Initialise()
+        {
+            Console.CursorVisible = false;
+
+            room.Initialise();
+            shop.Initialise();
+            pet.Initialise();
+            coin.Initialise();
+        }
+
+        public void Update()
+        {
+            doneSelection = false;
+            coin.Update();
+            room.Update();
+            pet.Update();
+        }
+
+        bool gettingInfo = false; 
+        
+        public void Display()
+        {
+            if (selectionMenu.menuSelection == "Play Game")
+            {
+                if (gettingInfo != true)
+                {
+                    do
+                    {
+                        Console.Clear();
+                        pet.SelectingPet();
+                        pet.GettingPetDetails();
+                        gettingInfo = true;
+                    }
+                    while (gettingInfo != true);
+                }
+
+
+                Console.Clear();
+                coin.Display();
+                room.Display();
+                pet.Display();
+            }
+            else
+            {
+                selectionMenu.Display();
+            }
+
+
+            if (Console.KeyAvailable)
+            {
+                switch (Console.ReadKey(true).Key)
+                {
+                    #region Setting Target Temperature and Speed
+                    case ConsoleKey.T:
+                        do
+                        {
+                            Console.Clear();
+                            room.GettingTargetTemperature();
+
+                            Thread.Sleep(1000 / 10);
+
+                            if (Console.KeyAvailable)
+                            {
+                                switch (Console.ReadKey(true).Key)
+                                {
+                                    case ConsoleKey.UpArrow:
+                                        room.RoomHeat();
+                                        break;
+
+                                    case ConsoleKey.DownArrow:
+                                        room.RoomCool();
+                                        break;
+
+                                    case ConsoleKey.LeftArrow:
+                                        room.Slower();
+                                        break;
+
+                                    case ConsoleKey.RightArrow:
+                                        room.Faster();
+                                        break;
+
+                                    case ConsoleKey.Enter:
+                                        doneSelection = true;
+                                        break;
+                                }
+                            }
+                        }
+                        while (doneSelection != true);
+                        Console.Clear();
+                        break;
+                        #endregion
+
+                    #region Changing Heating/AC Status
+                    case ConsoleKey.F1:
+                        room.TurnHeatingOff();
+                        break;
+
+                    case ConsoleKey.F2:
+                        room.TurnHeatingOn();
+                        break;
+
+                    case ConsoleKey.F3:
+                        room.TurningACOff();
+                        break;
+
+                    case ConsoleKey.F4:
+                        room.TurningACOn();
+                        break;
+                    #endregion
+
+                    #region Opening Shop
+                    case ConsoleKey.S:
+                        do
+                        {
+                            Console.Clear();
+
+                            shop.Display();
+
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                case ConsoleKey.Escape:
+                                    doneSelection = true;
+                                    break;
+                            }
+
+                        }
+                        while (doneSelection != true);
+                        
+                        break;
+                    #endregion
+
+                    #region Inventory
+                    case ConsoleKey.I:
+                        do
+                        {
+                            pet.UseInventory();   
+
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                case ConsoleKey.Escape:
+                                    doneSelection = true;
+                                    break;
+                            }
+
+                        }
+                        while (doneSelection != true);
+                        break;
+                    #endregion
+
+                    #region Back to menu
+                    case ConsoleKey.Escape:
+                        selectionMenu.menuSelection = "";
+                        Console.Clear();
+                        break;
+                    #endregion
+                }
+            }
+        }   
+    }
