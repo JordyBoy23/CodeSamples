@@ -1,0 +1,16 @@
+class Program
+    {
+        static App myApp = new App();
+
+        static void Main(string[] args)
+        {
+            #region Sets console size
+            Console.WindowHeight = 50;
+            Console.WindowWidth = 170;
+            Console.BufferHeight = 50;
+            Console.BufferWidth = 170;
+            #endregion
+
+            myApp.Run();
+        }
+    }
